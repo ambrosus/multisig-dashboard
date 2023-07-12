@@ -29,9 +29,8 @@ const App = () => {
 
   const init = async () => {
     const chainId = (await provider.getNetwork()).chainId;
-    const signer = provider.getSigner();
 
-    const contractsData = new Contracts(signer, chainId);
+    const contractsData = new Contracts(provider, chainId);
     const {contracts, nameByAddress} = contractsData;
 
     const promises = multisigFinanceAddresses.map(async (el) => {
