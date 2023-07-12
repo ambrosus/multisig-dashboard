@@ -1,9 +1,11 @@
 import {useEffect, useMemo, useState} from "react";
-import {AmbErrorProviderWeb3, Contracts} from "@airdao/airdao-node-contracts";
-import {utils} from 'ethers';
+import {AmbErrorProviderWeb3, Contracts, Multisig} from "@airdao/airdao-node-contracts";
+import {utils, ethers} from 'ethers';
+
+const masterMultisig = '0x68c66f1C56CC6341856cf4427650978B653C78D6'
 
 const multisigFinanceAddresses = [
-  '0x68c66f1C56CC6341856cf4427650978B653C78D6',
+  masterMultisig,
   '0xA9aFf50ABE9997EBe09834493cB675F8b13feB50',
   '0xAfaBC47C72440037Db5F5F6011Dc2ac34fc52Fa6',
   '0xC24b4c73dc9002c8aaBc3620965D727C29E0126F',
@@ -14,7 +16,7 @@ const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
 
-const provider = window.ethereum ? new AmbErrorProviderWeb3(window.ethereum) : null;
+const provider = window.ethereum ? new ethers.providers.Web3Provider(window.ethereum) : null;
 
 const App = () => {
   const [tableData, setTableData] = useState(null);
@@ -27,11 +29,26 @@ const App = () => {
 
   const init = async () => {
     const chainId = (await provider.getNetwork()).chainId;
-    const {contracts, nameByAddress} = new Contracts(provider, chainId);
+    const signer = provider.getSigner();
+
+    const contractsData = new Contracts(signer, chainId);
+    const {contracts, nameByAddress} = contractsData;
 
     const promises = multisigFinanceAddresses.map(async (el) => {
       const filter = contracts[nameByAddress[el]].filters.Withdraw();
-      const balance = await provider.getBalance(el)
+      let balance;
+
+      if (el === masterMultisig) {
+        await Multisig.getMasterFinanceBalances(contractsData)
+          .then((response) => {
+            balance = response.reduce(
+              (accumulator, {balance}) => accumulator.add(balance),
+              utils.parseEther('0')
+            );
+          })
+      } else {
+        balance = await provider.getBalance(el)
+      }
 
       return new Promise((resolve) => {
         contracts[nameByAddress[el]].queryFilter(filter)
@@ -62,12 +79,12 @@ const App = () => {
   ), [tableData]);
 
   return !window.ethereum ? (
-    <div>
+    <div className="metamask-block">
       <p className="metamask-warning">
         You need to install Metamask to see this page
       </p>
       <button onClick={handleMetamask} className="metamask-install">
-        Install Metamask
+        {window.innerWidth > 768 ? 'Install' : 'Open'} Metamask
       </button>
     </div>
   ) : (
@@ -85,7 +102,7 @@ const App = () => {
           <div className="table__cell">Balance:</div>
           {tableData.map((el) => (
             <div key={el.multisigName} className="table__cell">
-              {el.balance}
+              {(+el.balance).toFixed(2).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')}
             </div>
           ))}
         </div>

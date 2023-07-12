@@ -18,6 +18,10 @@ code {
   margin: 0;
 }
 
+.table {
+  min-width: 1400px;
+}
+
 .table__row {
   display: grid;
   grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr;
@@ -27,4 +31,19 @@ code {
 .table__cell {
   border-right: 1px solid black;
   padding: 5px 15px;
+}
+
+.metamask-block {
+  text-align: center;
+  margin-top: 30vh;
+}
+
+.metamask-warning {
+  font-size: 34px;
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.metamask-install {
+  padding: 5px;
 }
