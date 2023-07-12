@@ -16,7 +16,7 @@ const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
 
-const provider = window.ethereum ? new ethers.providers.Web3Provider(window.ethereum) : null;
+const provider = window.ethereum ? new AmbErrorProviderWeb3(window.ethereum) : null;
 
 const App = () => {
   const [tableData, setTableData] = useState(null);
