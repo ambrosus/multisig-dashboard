@@ -14,13 +14,15 @@ const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
 
-const provider = new AmbErrorProviderWeb3(window.ethereum);
+const provider = window.ethereum ? new AmbErrorProviderWeb3(window.ethereum) : null;
 
 const App = () => {
   const [tableData, setTableData] = useState(null);
 
   useEffect(() => {
-    init();
+    if (window.ethereum) {
+      init();
+    }
   }, []);
 
   const init = async () => {
@@ -45,58 +47,75 @@ const App = () => {
       .then((res) => setTableData(res));
   };
 
-  const maxTxsLength = useMemo(() => {
-    if (tableData) {
-      return Math.max(...tableData.map((el) => el.txs.length));
-    } else {
-      return 0;
-    }
-  }, [tableData]);
+  const handleMetamask = () => {
+    window
+      .open(
+        `https://metamask.app.link/dapp/${
+          window.location.hostname + window.location.pathname
+        }`
+      )
+      .focus();
+  };
 
-  return tableData && (
-    <div className="table">
-      <div className="table__row">
-        <div className="table__cell" />
-        {tableData.map((el) => (
-          <div key={el.multisigName} className="table__cell">
-            {el.multisigName.replace('Finance', '')}
-          </div>
-        ))}
-      </div>
-      <div className="table__row">
-        <div className="table__cell">Balance:</div>
-        {tableData.map((el) => (
-          <div key={el.multisigName} className="table__cell">
-            {el.balance}
-          </div>
-        ))}
-      </div>
-      {Array(maxTxsLength).fill(0).map((_, i) => (
-        <div key={i} className="table__row">
-          <div className="table__cell">
-            {i === 0 && <p>List of txs:</p>}
-          </div>
+  const maxTxsLength = useMemo(() => (
+    tableData ? Math.max(...tableData.map((el) => el.txs.length)) : 0
+  ), [tableData]);
+
+  return !window.ethereum ? (
+    <div>
+      <p className="metamask-warning">
+        You need to install Metamask to see this page
+      </p>
+      <button onClick={handleMetamask} className="metamask-install">
+        Install Metamask
+      </button>
+    </div>
+  ) : (
+    tableData && (
+      <div className="table">
+        <div className="table__row">
+          <div className="table__cell" />
           {tableData.map((el) => (
             <div key={el.multisigName} className="table__cell">
-              {el.txs[i] && (
-                <>
-                  <p>
-                    Tx hash: {' '}
-                    <a
-                      href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
-                      target="_blank" rel="noreferrer"
-                    >
-                      {formatString(el.txs[i].transactionHash)}
-                    </a>
-                  </p>
-                  <p>Amount: {utils.formatEther(el.txs[i].args.amount).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')} AMB</p>
-                </>
-              )}
+              {el.multisigName.replace('Finance', '')}
             </div>
           ))}
         </div>
-      ))}
-    </div>
+        <div className="table__row">
+          <div className="table__cell">Balance:</div>
+          {tableData.map((el) => (
+            <div key={el.multisigName} className="table__cell">
+              {el.balance}
+            </div>
+          ))}
+        </div>
+        {Array(maxTxsLength).fill(0).map((_, i) => (
+          <div key={i} className="table__row">
+            <div className="table__cell">
+              {i === 0 && <p>List of txs:</p>}
+            </div>
+            {tableData.map((el) => (
+              <div key={el.multisigName} className="table__cell">
+                {el.txs[i] && (
+                  <>
+                    <p>
+                      Tx hash: {' '}
+                      <a
+                        href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
+                        target="_blank" rel="noreferrer"
+                      >
+                        {formatString(el.txs[i].transactionHash)}
+                      </a>
+                    </p>
+                    <p>Amount: {utils.formatEther(el.txs[i].args.amount).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')} AMB</p>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
   )
 };
 
