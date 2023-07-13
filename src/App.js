@@ -12,21 +12,6 @@ const multisigFinanceAddresses = [
   '0xfaE424EA67c94a510f9230b551bfE13340d9cA15',
 ];
 
-async function getChainId() {
-  // Check if MetaMask is installed
-  if (window.ethereum) {
-    await window.ethereum.enable(); // Request access to the user's accounts
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const network = await provider.getNetwork();
-    const chainId = network.chainId;
-
-    console.log('Chain ID:', chainId);
-    return chainId;
-  } else {
-    console.error('MetaMask not detected!');
-  }
-}
-
 const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
@@ -72,7 +57,7 @@ const App = () => {
               symbol: "AMB",
               decimals: 18
             },
-            blockExplorerUrls: ["https://polygonscan.com/"],
+            blockExplorerUrls: ["https://airdao.io/explorer/"],
             rpcUrls: ["https://network.ambrosus.io/"],
           },
         ],
@@ -105,23 +90,16 @@ const App = () => {
       return new Promise((resolve) => {
         contracts[nameByAddress[el]].queryFilter(filter)
           .then((response) => {
-            console.log(11);
             resolve({
               txs: response,
               multisigName: nameByAddress[el],
               balance: utils.formatEther(balance),
             })
           })
-          .catch(e=> console.log(e))
       })
     });
-    console.log(4);
     await Promise.all(promises)
       .then((res) => setTableData(res))
-      .catch((res) => {
-        console.log(res);
-      });
-    console.log(5);
   };
 
   const handleMetamask = () => {
