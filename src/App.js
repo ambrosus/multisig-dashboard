@@ -12,23 +12,76 @@ const multisigFinanceAddresses = [
   '0xfaE424EA67c94a510f9230b551bfE13340d9cA15',
 ];
 
+async function getChainId() {
+  // Check if MetaMask is installed
+  if (window.ethereum) {
+    await window.ethereum.enable(); // Request access to the user's accounts
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const network = await provider.getNetwork();
+    const chainId = network.chainId;
+
+    console.log('Chain ID:', chainId);
+    return chainId;
+  } else {
+    console.error('MetaMask not detected!');
+  }
+}
+
 const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
-
-const provider = window.ethereum ? new AmbErrorProviderWeb3(window.ethereum) : null;
+const provider = new ethers.providers.Web3Provider(window.ethereum);
 
 const App = () => {
+  const [isAmbNetwork, setIsAmbNetwork] = useState(null);
   const [tableData, setTableData] = useState(null);
 
   useEffect(() => {
     if (window.ethereum) {
-      init();
+      checkNetwork();
     }
-  }, []);
+  }, [])
 
-  const init = async () => {
+  useEffect(() => {
+    if (isAmbNetwork) {
+      getTableData();
+    }
+  }, [isAmbNetwork]);
+
+  const checkNetwork = async () => {
     const chainId = (await provider.getNetwork()).chainId;
+    setIsAmbNetwork(chainId === 16718)
+  };
+
+  const changeNetwork = async () => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x414E' }],
+      })
+        .then(() => window.location.reload())
+    } catch (switchError) {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0x414E',
+            chainName: 'AirDAO Mainnet',
+            nativeCurrency: {
+              name: "Amber",
+              symbol: "AMB",
+              decimals: 18
+            },
+            blockExplorerUrls: ["https://polygonscan.com/"],
+            rpcUrls: ["https://network.ambrosus.io/"],
+          },
+        ],
+      });
+    }
+  }
+
+  const getTableData = async () => {
+    const chainId = 16718;
 
     const contractsData = new Contracts(provider, chainId);
     const {contracts, nameByAddress} = contractsData;
@@ -46,21 +99,29 @@ const App = () => {
             );
           })
       } else {
-        balance = await provider.getBalance(el)
+        balance = 0
       }
 
       return new Promise((resolve) => {
         contracts[nameByAddress[el]].queryFilter(filter)
-          .then((response) => resolve({
-            txs: response,
-            multisigName: nameByAddress[el],
-            balance: utils.formatEther(balance),
-          }));
+          .then((response) => {
+            console.log(11);
+            resolve({
+              txs: response,
+              multisigName: nameByAddress[el],
+              balance: utils.formatEther(balance),
+            })
+          })
+          .catch(e=> console.log(e))
       })
     });
-
-    Promise.all(promises)
-      .then((res) => setTableData(res));
+    console.log(4);
+    await Promise.all(promises)
+      .then((res) => setTableData(res))
+      .catch((res) => {
+        console.log(res);
+      });
+    console.log(5);
   };
 
   const handleMetamask = () => {
@@ -87,50 +148,61 @@ const App = () => {
       </button>
     </div>
   ) : (
-    tableData && (
-      <div className="table">
-        <div className="table__row">
-          <div className="table__cell" />
-          {tableData.map((el) => (
-            <div key={el.multisigName} className="table__cell">
-              {el.multisigName.replace('Finance', '')}
-            </div>
-          ))}
-        </div>
-        <div className="table__row">
-          <div className="table__cell">Balance:</div>
-          {tableData.map((el) => (
-            <div key={el.multisigName} className="table__cell">
-              {(+el.balance).toFixed(2).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')}
-            </div>
-          ))}
-        </div>
-        {Array(maxTxsLength).fill(0).map((_, i) => (
-          <div key={i} className="table__row">
-            <div className="table__cell">
-              {i === 0 && <p>List of txs:</p>}
-            </div>
+    isAmbNetwork === false ? (
+      <div className="metamask-block">
+        <p className="metamask-warning">
+          You need change metamask network to AirDAO
+        </p>
+        <button onClick={changeNetwork} className="metamask-install">
+          Change network
+        </button>
+      </div>
+    ) : (
+      tableData && (
+        <div className="table">
+          <div className="table__row">
+            <div className="table__cell" />
             {tableData.map((el) => (
               <div key={el.multisigName} className="table__cell">
-                {el.txs[i] && (
-                  <>
-                    <p>
-                      Tx hash: {' '}
-                      <a
-                        href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
-                        target="_blank" rel="noreferrer"
-                      >
-                        {formatString(el.txs[i].transactionHash)}
-                      </a>
-                    </p>
-                    <p>Amount: {utils.formatEther(el.txs[i].args.amount).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')} AMB</p>
-                  </>
-                )}
+                {el.multisigName.replace('Finance', '')}
               </div>
             ))}
           </div>
-        ))}
-      </div>
+          <div className="table__row">
+            <div className="table__cell">Balance:</div>
+            {tableData.map((el) => (
+              <div key={el.multisigName} className="table__cell">
+                {(+el.balance).toFixed(2).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')}
+              </div>
+            ))}
+          </div>
+          {Array(maxTxsLength).fill(0).map((_, i) => (
+            <div key={i} className="table__row">
+              <div className="table__cell">
+                {i === 0 && <p>List of txs:</p>}
+              </div>
+              {tableData.map((el) => (
+                <div key={el.multisigName} className="table__cell">
+                  {el.txs[i] && (
+                    <>
+                      <p>
+                        Tx hash: {' '}
+                        <a
+                          href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
+                          target="_blank" rel="noreferrer"
+                        >
+                          {formatString(el.txs[i].transactionHash)}
+                        </a>
+                      </p>
+                      <p>Amount: {utils.formatEther(el.txs[i].args.amount).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')} AMB</p>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )
     )
   )
 };
