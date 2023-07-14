@@ -15,7 +15,7 @@ const multisigFinanceAddresses = [
 const formatString = (str) => {
   return `${str.substring(0, 4)}...${str.substring(str.length - 4, str.length)}`;
 };
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = window.ethereum ? new ethers.providers.Web3Provider(window.ethereum) : {};
 
 const App = () => {
   const [isAmbNetwork, setIsAmbNetwork] = useState(null);
