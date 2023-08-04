@@ -13,12 +13,37 @@ const multisigFinanceAddresses = [
   '0xfaE424EA67c94a510f9230b551bfE13340d9cA15',
 ];
 
-export default function useTableData() {
+// Time:
+// Down old to new
+// Up new to old
+// Amount:
+// Down min to max
+// Up max to min
+
+export default function useTableData(
+  sorting = { param: 'time', direction: 'descending' }
+) {
   const [tableData, setTableData] = useState(null);
+
+  console.log(tableData);
 
   useEffect(() => {
     getTableData();
   }, []);
+
+  useEffect(() => {
+    if (tableData) {
+      const sortedWalletsData = tableData.map((wallet) => {
+        return {
+          ...wallet,
+          txs: wallet.txs.sort(
+            sortingFunctions[sorting.param][sorting.direction]
+          ),
+        };
+      });
+      setTableData(sortedWalletsData);
+    }
+  }, [sorting]);
 
   const getTableData = async () => {
     const chainId = 16718;
@@ -53,7 +78,16 @@ export default function useTableData() {
         });
       });
     });
-    await Promise.all(promises).then((res) => setTableData(res));
+    const walletsData = await Promise.all(promises);
+    const sortedWalletsData = walletsData.map((wallet) => {
+      return {
+        ...wallet,
+        txs: wallet.txs.sort(
+          sortingFunctions[sorting.param][sorting.direction]
+        ),
+      };
+    });
+    setTableData(sortedWalletsData);
   };
 
   const maxTxsLength = useMemo(
@@ -63,3 +97,38 @@ export default function useTableData() {
 
   return { tableData, maxTxsLength };
 }
+
+const sortingFunctions = {
+  time: {
+    ascending: (a, b) => {
+      return b.blockNumber - a.blockNumber;
+    },
+    descending: (a, b) => {
+      return a.blockNumber - b.blockNumber;
+    },
+  },
+  amount: {
+    ascending: ({ args: { amount: a } }, { args: { amount: b } }) => {
+      if (a.lt(b)) {
+        return 1;
+      }
+      if (a.gt(b)) {
+        return -1;
+      }
+      if (a.eq(b)) {
+        return 0;
+      }
+    },
+    descending: ({ args: { amount: a } }, { args: { amount: b } }) => {
+      if (a.lt(b)) {
+        return -1;
+      }
+      if (a.gt(b)) {
+        return 1;
+      }
+      if (a.eq(b)) {
+        return 0;
+      }
+    },
+  },
+};

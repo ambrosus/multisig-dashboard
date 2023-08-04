@@ -1,6 +1,5 @@
 import { utils } from 'ethers';
 import useTableData from './useTableData';
-import chevronArrow from './assets/chevron-arrow.svg';
 
 import { Menu } from 'airdao-components-and-tools/components';
 import {
@@ -8,51 +7,39 @@ import {
   walletconnectConnector,
 } from 'airdao-components-and-tools/utils';
 import { useAutoLogin } from 'airdao-components-and-tools/hooks';
+import SortBy from './components/SortBy';
+import { useState } from 'react';
 
 const App = () => {
   useAutoLogin();
-  const { tableData, maxTxsLength } = useTableData();
+  const [sortBy, setSortBy] = useState({
+    param: 'time',
+    direction: 'descending',
+  });
+  const { tableData, maxTxsLength } = useTableData(sortBy);
 
   return (
-    tableData && (
-      <>
-        <Menu
-          metamaskConnector={metamaskConnector}
-          walletconnectConnector={walletconnectConnector}
-          initHidden
-        />
-        <main className='main'>
-          <header className='header'>
-            <h1 className='heading'>Wallet balance</h1>
-            <p className='description'>
-              Multisig wallet is a wallet for all company founds operations, see
-              how it works on airdaowiki
-            </p>
-          </header>
+    <>
+      <Menu
+        metamaskConnector={metamaskConnector}
+        walletconnectConnector={walletconnectConnector}
+        initHidden
+      />
+      <main className='main'>
+        <header className='header'>
+          <h1 className='heading'>Wallet balance</h1>
+          <p className='description'>
+            Multisig wallet is a wallet for all company founds operations, see
+            how it works on airdaowiki
+          </p>
+        </header>
 
-          <section className='table-container'>
-            <div className='table-header'>
-              <h2 className='table-heading'>Transactions</h2>
-              <div className='sort-by'>
-                <h3 className='sort-by__heading'>Sort by:</h3>
-                <button className='sort-by__button'>
-                  Time
-                  <img
-                    src={chevronArrow}
-                    className='sort-by__arrow'
-                    alt={'arrow'}
-                  />
-                </button>
-                <button className='sort-by__button'>
-                  Balance
-                  <img
-                    src={chevronArrow}
-                    className='sort-by__arrow'
-                    alt={'arrow'}
-                  />
-                </button>
-              </div>
-            </div>
+        <section className='table-container'>
+          <div className='table-header'>
+            <h2 className='table-heading'>Transactions</h2>
+            <SortBy onChange={setSortBy} />
+          </div>
+          {tableData && (
             <div className='scroll-container'>
               <div className='table'>
                 <div className='wallet-balances'>
@@ -109,10 +96,10 @@ const App = () => {
                   ))}
               </div>
             </div>
-          </section>
-        </main>
-      </>
-    )
+          )}
+        </section>
+      </main>
+    </>
   );
 };
 
