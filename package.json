@@ -11,7 +11,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "airdao-components-and-tools": "https://github.com/ambrosus/airdao-components-and-tools#web3-react-migration",
+    "@web3-react/core": "^8.2.0"
   },
   "devDependencies": {
     "eslint": "^8.23.1",
@@ -23,9 +25,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "yarn configure && react-scripts build",
+    "build:dev": "react-scripts build",
+    "configure": "./preinstall.sh"
   },
   "eslintConfig": {
     "extends": [

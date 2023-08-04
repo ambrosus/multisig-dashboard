@@ -2,14 +2,25 @@ import { utils } from 'ethers';
 import useTableData from './useTableData';
 import chevronArrow from './assets/chevron-arrow.svg';
 
-const App = () => {
-  const { tableData, maxTxsLength } = useTableData();
+import { Menu } from 'airdao-components-and-tools/components';
+import {
+  metamaskConnector,
+  walletconnectConnector,
+} from 'airdao-components-and-tools/utils';
+import { useAutoLogin } from 'airdao-components-and-tools/hooks';
 
-  console.log(tableData);
+const App = () => {
+  useAutoLogin();
+  const { tableData, maxTxsLength } = useTableData();
 
   return (
     tableData && (
       <>
+        <Menu
+          metamaskConnector={metamaskConnector}
+          walletconnectConnector={walletconnectConnector}
+          initHidden
+        />
         <main className='main'>
           <header className='header'>
             <h1 className='heading'>Wallet balance</h1>
@@ -19,38 +30,36 @@ const App = () => {
               see how it works on airdaowiki
             </p>
           </header>
-          <section className='table-container'>
-            <div className='table'>
-              <div className='table-header'>
-                <h2 className='table-heading'>Transactions</h2>
-                <div className='sort-by'>
-                  <h3 className='sort-by__heading'>Sort by:</h3>
-                  <button className='sort-by__button'>
-                    Time
-                    <img
-                      src={chevronArrow}
-                      className='sort-by__arrow'
-                      alt={'arrow'}
-                    />
-                  </button>
-                  <button className='sort-by__button'>
-                    Balance
-                    <img
-                      src={chevronArrow}
-                      className='sort-by__arrow'
-                      alt={'arrow'}
-                    />
-                  </button>
-                </div>
-              </div>
 
-              <div />
-              {tableData.map((wallet, i) => (
+          <section className='table-container'>
+            <div className='table-header'>
+              <h2 className='table-heading'>Transactions</h2>
+              <div className='sort-by'>
+                <h3 className='sort-by__heading'>Sort by:</h3>
+                <button className='sort-by__button'>
+                  Time
+                  <img
+                    src={chevronArrow}
+                    className='sort-by__arrow'
+                    alt={'arrow'}
+                  />
+                </button>
+                <button className='sort-by__button'>
+                  Balance
+                  <img
+                    src={chevronArrow}
+                    className='sort-by__arrow'
+                    alt={'arrow'}
+                  />
+                </button>
+              </div>
+            </div>
+
+            <div className='wallet-balances'>
+              {tableData.map((wallet) => (
                 <div
                   key={wallet.multisigName}
-                  className={`wallet-balance-card ${
-                    i === 0 ? 'wallet-balance-card__first' : ''
-                  }`}
+                  className={`wallet-balance-card`}
                 >
                   <h4 className='wallet-name'>
                     {wallet.multisigName.replace('Finance', '')}
@@ -62,12 +71,14 @@ const App = () => {
                   </span>
                 </div>
               ))}
+            </div>
 
+            <div className='table'>
               {Array(maxTxsLength)
                 .fill(0)
                 .map((_, i) => (
-                  <>
-                    <div className='table__cell'>
+                  <div className='table__row' key={i}>
+                    <div className='table__cell table__cell_info'>
                       <div className='cell-title'>Tx hash</div>
                       <div className='cell-title'>Amount</div>
                     </div>
@@ -96,7 +107,7 @@ const App = () => {
                         )}
                       </div>
                     ))}
-                  </>
+                  </div>
                 ))}
             </div>
           </section>
