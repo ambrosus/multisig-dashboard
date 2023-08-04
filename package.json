@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn configure && react-scripts build",
+    "build": "react-scripts build",
     "build:dev": "react-scripts build",
     "configure": "./preinstall.sh"
   },
