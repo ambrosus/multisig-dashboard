@@ -42,28 +42,34 @@ code {
   font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.16px;
+
+  max-width: 450px;
 }
 
 .table-container {
   display: flex;
-  width: 100%;
+  width: 100vw;
   flex-direction: column;
   align-items: center;
   background-color: #fff;
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
-  padding: 32px 80px;
+  padding: 32px 0;
+}
 
+.scroll-container {
+  width: 100%;
   overflow-x: scroll;
+  padding: 0 80px;
 }
 
 .table-header {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
 
   width: calc(100% - 60px);
-  padding-bottom: 18px;
+  padding: 0 80px 18px;
 
   margin-left: auto;
 }
@@ -74,15 +80,17 @@ code {
   font-style: normal;
   font-weight: 700;
   line-height: 32px; /* 177.778% */
+  padding-right: 16px;
 }
 
 .sort-by {
-  width: 100%;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
   gap: 26px;
+
+  margin: 0 auto;
 }
 
 .sort-by__heading {
@@ -116,9 +124,8 @@ code {
 
 .wallet-balances {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  width: calc(100% - 60px);
-  margin-left: auto;
+  grid-template-columns: repeat(5, minmax(160px, 1fr));
+  margin-left: 60px;
   border-bottom: 1px solid #EDF3FF;
   border-top: 1px solid #EDF3FF;
 }
@@ -163,13 +170,11 @@ code {
 
 .table {
   width: 100%;
-
-  min-width: 1220px;
 }
 
 .table__row {
   display: grid;
-  grid-template-columns: 60px 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 60px repeat(5, minmax(160px, 1fr));
 }
 
 .table__cell {
@@ -233,4 +238,41 @@ code {
 
 .side-menu {
   border-radius: 16px !important;
+}
+
+@media screen and (max-width: 1023px) {
+  .table-container {
+    padding: 20px 0;
+  }
+
+  .table-header {
+    padding: 0 24px 18px;
+  }
+
+  .scroll-container {
+    padding: 0 24px;
+  }
+
+  .header {
+    padding: 100px 24px 35px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .sort-by {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .side-menu {
+    border-radius: unset;
+  }
 }
