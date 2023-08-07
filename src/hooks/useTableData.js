@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Contracts, Multisig } from '@airdao/airdao-node-contracts';
-import provider from './services/provider';
+import provider from '../services/provider';
 import { utils } from 'ethers';
 
 const masterMultisig = '0x68c66f1C56CC6341856cf4427650978B653C78D6';
@@ -24,8 +24,6 @@ export default function useTableData(
   sorting = { param: 'time', direction: 'descending' }
 ) {
   const [tableData, setTableData] = useState(null);
-
-  console.log(tableData);
 
   useEffect(() => {
     getTableData();

@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import useTableData from './useTableData';
+import useTableData from './hooks/useTableData';
 
 import { Menu } from 'airdao-components-and-tools/components';
 import {
@@ -9,6 +9,9 @@ import {
 import { useAutoLogin } from 'airdao-components-and-tools/hooks';
 import SortBy from './components/SortBy';
 import { useState } from 'react';
+import useTxComments from './hooks/useTxComments';
+import CommentIcon from './assets/CommentIcon.';
+import CommentModal from './components/CommentModal';
 
 const App = () => {
   useAutoLogin();
@@ -17,6 +20,19 @@ const App = () => {
     direction: 'descending',
   });
   const { tableData, maxTxsLength } = useTableData(sortBy);
+
+  const comments = useTxComments();
+
+  const [currentComment, setCurrentComment] = useState(null);
+
+  const setComment = (id) => {
+    if (id === currentComment?.id) {
+      setCurrentComment(null);
+      return;
+    }
+
+    setCurrentComment(comments[id]);
+  };
 
   return (
     <>
@@ -64,30 +80,49 @@ const App = () => {
                   .map((_, i) => (
                     <div className='table__row' key={i}>
                       <div className='table__cell table__cell_info'>
-                        <div className='cell-title'>Tx hash</div>
-                        <div className='cell-title'>Amount</div>
+                        <div className='table__cell-data'>
+                          <div className='cell-title'>Tx hash</div>
+                          <div className='cell-title'>Amount</div>
+                        </div>
                       </div>
                       {tableData.map((el) => (
                         <div key={el.multisigName} className='table__cell'>
                           {el.txs[i] && (
                             <>
-                              <a
-                                href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
-                                target='_blank'
-                                rel='noreferrer'
-                                className='tx-link'
-                              >
-                                {formatString(el.txs[i].transactionHash)}
-                              </a>
-                              <p className='tx-amount'>
-                                {utils
-                                  .formatEther(el.txs[i].args.amount)
-                                  .replace(
-                                    /(\d)(?=(\d{3})+([^\d]|$))/g,
-                                    '$1,'
-                                  )}{' '}
-                                AMB
-                              </p>
+                              <div className={'table__cell-data'}>
+                                <a
+                                  href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
+                                  target='_blank'
+                                  rel='noreferrer'
+                                  className='tx-link'
+                                >
+                                  {formatString(el.txs[i].transactionHash)}
+                                </a>
+                                <p className='tx-amount'>
+                                  {utils
+                                    .formatEther(el.txs[i].args.amount)
+                                    .replace(
+                                      /(\d)(?=(\d{3})+([^\d]|$))/g,
+                                      '$1,'
+                                    )}{' '}
+                                  AMB
+                                </p>
+                              </div>
+                              {comments[el.txs[i].transactionHash] && (
+                                <button
+                                  className={`comment-button ${
+                                    currentComment?.id ===
+                                    el.txs[i].transactionHash
+                                      ? 'comment-button_active'
+                                      : ''
+                                  }`}
+                                  onClick={() =>
+                                    setComment(el.txs[i].transactionHash)
+                                  }
+                                >
+                                  <CommentIcon />
+                                </button>
+                              )}
                             </>
                           )}
                         </div>
@@ -99,6 +134,7 @@ const App = () => {
           )}
         </section>
       </main>
+      <CommentModal {...currentComment} close={() => setCurrentComment(null)} />
     </>
   );
 };

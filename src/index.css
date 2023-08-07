@@ -13,6 +13,7 @@ body {
 
 html, body, #root {
   height: 100%;
+  overflow-x: hidden;
 }
 
 .main {
@@ -197,6 +198,14 @@ html, body, #root {
   border-bottom: 1px solid #EDF3FF;
 
   display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  gap: 24px;
+}
+
+.table__cell-data {
+  display: flex;
   flex-flow: column nowrap;
   gap: 4px;
 }
@@ -253,6 +262,97 @@ html, body, #root {
 
 .side-menu {
   border-radius: 16px !important;
+}
+
+.comment-button {
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  background: #fff;
+
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.comment-button:hover {
+  background: #EDF3FF;
+}
+
+.comment-button_active {
+  background: #EDF3FF;
+}
+
+.comment-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: fit-content;
+
+  padding: 16px 0;
+
+  border-radius: 24px 24px 0 0;
+  background: #EDF3FF;
+}
+
+.comment-modal__container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin: 0 auto;
+
+  max-width: 800px;
+}
+
+.comment-modal__title {
+  color: #191919;
+  font-size: 12px;
+  font-style: normal;
+  /*TODO: import font weight*/
+  /*font-weight: 500;*/
+  line-height: 16px; /* 133.333% */
+  letter-spacing: -0.12px;
+  margin-bottom: 4px;
+}
+
+.comment-modal__text {
+  color:  #51545A;
+  /* Caption 2/400 - Regular */
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: -0.12px;
+  margin-bottom: 16px;
+
+  & a:visited, & a:link {
+    color: #51545A;
+  }
+}
+
+.comment-modal__tx-hash {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: -0.12px;
+}
+
+.comment-modal__tx-hash-title {
+  margin-right: 24px;
+}
+
+.comment-modal__close-icon {
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 @media screen and (max-width: 1023px) {
