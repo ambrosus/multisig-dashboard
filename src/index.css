@@ -1,14 +1,8 @@
 body {
-  margin: 0;
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #EDF3FF;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
 
 * {
@@ -17,8 +11,13 @@ code {
   margin: 0;
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 .main {
   width: 100vw;
+  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;
@@ -26,6 +25,7 @@ code {
 
 .header {
   padding: 32px 80px 36px 370px;
+  flex-shrink: 0;
 }
 
 .heading {
@@ -58,6 +58,8 @@ code {
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
   padding: 32px 0 0;
+  flex-shrink: 0;
+  flex-grow: 1;
 }
 
 .scroll-container {
@@ -139,8 +141,6 @@ code {
   display: grid;
   grid-template-columns: repeat(5, minmax(160px, 1fr));
   margin-left: 60px;
-  border-bottom: 1px solid #EDF3FF;
-  border-top: 1px solid #EDF3FF;
 }
 
 .wallet-name {
@@ -162,6 +162,8 @@ code {
 
 .wallet-balance-card {
   padding: 22px 8px;
+  border-bottom: 1px solid #EDF3FF;
+  border-top: 1px solid #EDF3FF;
 }
 
 .wallet-balance-card:first-child {
