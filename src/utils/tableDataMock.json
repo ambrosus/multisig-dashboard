@@ -1,0 +1,27 @@
+[
+  {
+    "balance": "",
+    "multisigName": "FinanceMaster",
+    "txs": []
+  },
+  {
+    "balance": "",
+    "multisigName": "FinanceRewards",
+    "txs": []
+  },
+  {
+    "balance": "",
+    "multisigName": "FinanceEcosystem",
+    "txs": []
+  },
+  {
+    "balance": "",
+    "multisigName": "FinanceInvestors",
+    "txs": []
+  },
+  {
+    "balance": "",
+    "multisigName": "FinanceTeam",
+    "txs": []
+  }
+]

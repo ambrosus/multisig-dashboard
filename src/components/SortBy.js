@@ -1,6 +1,6 @@
-import chevronArrow from '../assets/chevron-arrow.svg';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import ArrowIcon from '../assets/ArrowIcon';
 
 export default function SortBy({ onChange = () => {} }) {
   const [sort, setSort] = useState({
@@ -37,11 +37,7 @@ export default function SortBy({ onChange = () => {} }) {
             onClick={() => clickHandler(param)}
           >
             {param}
-            <img
-              src={chevronArrow}
-              className={`${isAscending ? 'arrow-up' : ''}`}
-              alt={'arrow'}
-            />
+            <ArrowIcon className={`${isAscending ? 'arrow-up' : ''}`} />
           </button>
         );
       })}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Contracts, Multisig } from '@airdao/airdao-node-contracts';
 import provider from '../services/provider';
 import { utils } from 'ethers';
+import tableDataMock from '../utils/tableDataMock.json';
 
 const masterMultisig = '0x68c66f1C56CC6341856cf4427650978B653C78D6';
 
@@ -13,17 +14,10 @@ const multisigFinanceAddresses = [
   '0xfaE424EA67c94a510f9230b551bfE13340d9cA15',
 ];
 
-// Time:
-// Down old to new
-// Up new to old
-// Amount:
-// Down min to max
-// Up max to min
-
 export default function useTableData(
   sorting = { param: 'time', direction: 'descending' }
 ) {
-  const [tableData, setTableData] = useState(null);
+  const [tableData, setTableData] = useState(tableDataMock);
 
   useEffect(() => {
     getTableData();

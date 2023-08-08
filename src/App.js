@@ -13,12 +13,11 @@ import useTxComments from './hooks/useTxComments';
 import CommentIcon from './assets/CommentIcon.';
 import CommentModal from './components/CommentModal';
 import formatAddress from './utils/formatString';
+import TableHead from './components/TableHead';
 
 // TODO:
 //   - add animation for comment modal
 //   - add animation for comment button hover
-//   - add mobile layout
-//   - add loading state
 
 const App = () => {
   useAutoLogin();
@@ -40,6 +39,8 @@ const App = () => {
 
     setCurrentComment(comments[id]);
   };
+
+  console.log(tableData);
 
   return (
     <>
@@ -65,23 +66,7 @@ const App = () => {
           {tableData && (
             <div className='scroll-container'>
               <div className='table'>
-                <div className='wallet-balances'>
-                  {tableData.map((wallet) => (
-                    <div
-                      key={wallet.multisigName}
-                      className={`wallet-balance-card`}
-                    >
-                      <h4 className='wallet-name'>
-                        {wallet.multisigName.replace('Finance', '')}
-                      </h4>
-                      <span className='wallet-balance'>
-                        {(+wallet.balance)
-                          .toFixed(2)
-                          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <TableHead tableData={tableData} />
                 {Array(maxTxsLength)
                   .fill(0)
                   .map((_, i) => (

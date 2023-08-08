@@ -144,6 +144,10 @@ html, body, #root {
   margin-left: 60px;
 }
 
+.wallet-balances__loader {
+  left: -4px;
+}
+
 .wallet-name {
   color: #676B73;
   font-size: 14px;
@@ -280,6 +284,7 @@ html, body, #root {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  transition: background .2s ease-in-out;
 }
 
 .comment-button:hover {
@@ -352,7 +357,7 @@ html, body, #root {
   margin-right: 24px;
 }
 
-.comment-modal__tx-hash-link:link, .comment-modal__tx-hash-link {
+.comment-modal__tx-hash-link:link, .comment-modal__tx-hash-link:visited {
   color: #000;
   text-decoration: none;
 }
@@ -419,6 +424,10 @@ html, body, #root {
     letter-spacing: -0.12px;
   }
 
+  .comment-modal__tx-hash-link:link, .comment-modal__tx-hash-link:visited {
+    color: #7DA3F9;
+  }
+
   .comment-modal__close-icon > rect {
     fill: #fff;
   }
@@ -427,5 +436,70 @@ html, body, #root {
 @media screen and (max-width: 430px) {
   .side-menu {
     border-radius: unset;
+  }
+}
+
+
+.inline-loader {
+  display: inline-block;
+  position: relative;
+  width: 2.5rem;
+  height: 0.375rem;
+}
+
+.inline-loader div {
+  position: absolute;
+  top: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: #A1A6B2;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.inline-loader div:nth-child(1) {
+  left: 0.25rem;
+  animation: inline-loader1 0.6s infinite;
+}
+
+.inline-loader div:nth-child(2) {
+  left: 0.25rem;
+  animation: inline-loader2 0.6s infinite;
+}
+
+.inline-loader div:nth-child(3) {
+  left: 1rem;
+  animation: inline-loader2 0.6s infinite;
+}
+
+.inline-loader div:nth-child(4) {
+  left: 1.75rem;
+  animation: inline-loader3 0.6s infinite;
+}
+
+@keyframes inline-loader1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes inline-loader3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes inline-loader2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0.75rem, 0);
   }
 }

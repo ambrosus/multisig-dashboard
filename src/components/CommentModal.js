@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import formatAddress from '../utils/formatString';
 
 export default function CommentModal({ id, comment, name, close }) {
+  const isMobile = window.innerWidth < 768;
+
   return (
     id && (
       <div className='comment-modal'>
@@ -33,7 +35,7 @@ export default function CommentModal({ id, comment, name, close }) {
                 rel='noreferrer'
                 className='comment-modal__tx-hash-link'
               >
-                {formatAddress(id)}
+                {isMobile ? formatAddress(id) : id}
               </a>
             </p>
           </div>
