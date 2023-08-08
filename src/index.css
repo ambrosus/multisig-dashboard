@@ -140,7 +140,7 @@ html, body, #root {
 
 .wallet-balances {
   display: grid;
-  grid-template-columns: repeat(5, minmax(160px, 1fr));
+  grid-template-columns: repeat(5, minmax(180px, 1fr));
   margin-left: 60px;
 }
 
@@ -190,7 +190,7 @@ html, body, #root {
 
 .table__row {
   display: grid;
-  grid-template-columns: 60px repeat(5, minmax(160px, 1fr));
+  grid-template-columns: 60px repeat(5, minmax(180px, 1fr));
 }
 
 .table__cell {
@@ -254,6 +254,8 @@ html, body, #root {
   font-weight: 400;
   line-height: 16px; /* 133.333% */
   letter-spacing: -0.12px;
+
+  white-space: nowrap;
 }
 
 .side-menu-container {
@@ -295,7 +297,7 @@ html, body, #root {
   width: 100vw;
   height: fit-content;
 
-  padding: 16px 0;
+  padding: 16px 20px;
 
   border-radius: 24px 24px 0 0;
   background: #EDF3FF;
@@ -350,6 +352,11 @@ html, body, #root {
   margin-right: 24px;
 }
 
+.comment-modal__tx-hash-link:link, .comment-modal__tx-hash-link {
+  color: #7DA3F9;
+  text-decoration: none;
+}
+
 .comment-modal__close-icon {
   cursor: pointer;
   flex-shrink: 0;
@@ -383,6 +390,37 @@ html, body, #root {
 
   .sort-by {
     margin: 0;
+  }
+
+  .comment-modal {
+    width: calc(100vw - 12px);
+    left: 6px;
+    bottom: 6px;
+    padding: 12px 16px;
+    border-radius: 13px;
+    border: 1px solid #C2C5CC;
+    background: #FFF;
+  }
+
+  .comment-modal__container {
+    align-items: flex-start;
+  }
+
+  .comment-modal__tx-hash-title {
+    color: #676B73;
+  }
+
+  .comment-modal__tx-hash {
+
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px; /* 133.333% */
+    letter-spacing: -0.12px;
+  }
+
+  .comment-modal__close-icon > rect {
+    fill: #fff;
   }
 }
 

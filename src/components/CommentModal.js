@@ -1,6 +1,7 @@
 import { PrismicRichText } from '@prismicio/react';
 import CloseIcon from '../assets/CloseIcon';
 import PropTypes from 'prop-types';
+import formatAddress from '../utils/formatString';
 
 export default function CommentModal({ id, comment, name, close }) {
   return (
@@ -26,7 +27,14 @@ export default function CommentModal({ id, comment, name, close }) {
             />
             <p className='comment-modal__tx-hash'>
               <span className='comment-modal__tx-hash-title'>Tx hash</span>
-              {id}
+              <a
+                href={`https://airdao.io/explorer/tx/${id}`}
+                target='_blank'
+                rel='noreferrer'
+                className='comment-modal__tx-hash-link'
+              >
+                {formatAddress(id)}
+              </a>
             </p>
           </div>
           <CloseIcon className='comment-modal__close-icon' onClick={close} />

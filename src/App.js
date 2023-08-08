@@ -12,6 +12,13 @@ import { useState } from 'react';
 import useTxComments from './hooks/useTxComments';
 import CommentIcon from './assets/CommentIcon.';
 import CommentModal from './components/CommentModal';
+import formatAddress from './utils/formatString';
+
+// TODO:
+//   - add animation for comment modal
+//   - add animation for comment button hover
+//   - add mobile layout
+//   - add loading state
 
 const App = () => {
   useAutoLogin();
@@ -43,10 +50,10 @@ const App = () => {
       />
       <main className='main'>
         <header className='header'>
-          <h1 className='heading'>Wallet balance</h1>
+          <h1 className='heading'>AirDAO multi-sig</h1>
           <p className='description'>
-            Multisig wallet is a wallet for all company founds operations, see
-            how it works on airdaowiki
+            This multi-signature wallet holds all of AirDAO’s operational funds.
+            Learn how it works with our wiki.
           </p>
         </header>
 
@@ -96,7 +103,7 @@ const App = () => {
                                   rel='noreferrer'
                                   className='tx-link'
                                 >
-                                  {formatString(el.txs[i].transactionHash)}
+                                  {formatAddress(el.txs[i].transactionHash)}
                                 </a>
                                 <p className='tx-amount'>
                                   {utils
@@ -137,13 +144,6 @@ const App = () => {
       <CommentModal {...currentComment} close={() => setCurrentComment(null)} />
     </>
   );
-};
-
-const formatString = (str) => {
-  return `${str.substring(0, 4)}...${str.substring(
-    str.length - 4,
-    str.length
-  )}`;
 };
 
 export default App;
