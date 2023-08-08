@@ -51,7 +51,7 @@ const App = () => {
       />
       <main className='main'>
         <header className='header'>
-          <h1 className='heading'>AirDAO multi-sig</h1>
+          <h1 className='heading'>Governance multi-sig tracker</h1>
           <p className='description'>
             This multi-signature wallet holds all of AirDAO’s operational funds.
             Learn how it works with our wiki.
