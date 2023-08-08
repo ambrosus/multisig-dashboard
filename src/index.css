@@ -353,7 +353,7 @@ html, body, #root {
 }
 
 .comment-modal__tx-hash-link:link, .comment-modal__tx-hash-link {
-  color: #7DA3F9;
+  color: #000;
   text-decoration: none;
 }
 
@@ -411,7 +411,7 @@ html, body, #root {
   }
 
   .comment-modal__tx-hash {
-
+    color: #7DA3F9;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
