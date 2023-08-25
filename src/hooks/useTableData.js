@@ -43,10 +43,10 @@ export default function useTableData(
     const contractsData = new Contracts(provider, chainId);
     const { contracts, nameByAddress } = contractsData;
 
-    const promises = multisigFinanceAddresses.map(async (el) => {
+    const walletsData = await Promise.all(multisigFinanceAddresses.map(async (el) => {
       const filter = contracts[nameByAddress[el]].filters.Withdraw();
-      let balance;
 
+      let balance = 0;
       if (el === masterMultisig) {
         await Multisig.getMasterFinanceBalances(contractsData).then(
           (response) => {
@@ -56,26 +56,21 @@ export default function useTableData(
             );
           }
         );
-      } else {
-        balance = 0;
       }
 
-      return new Promise((resolve) => {
-        contracts[nameByAddress[el]].queryFilter(filter).then(async (response) => {
-          const txs = await Promise.all(response.map(async (tx) => {
-            const { timestamp } = await tx.getBlock();
-            return { ...tx, timestamp }
-          }));
+      const filteredData = await contracts[nameByAddress[el]].queryFilter(filter);
+      const txs = await Promise.all(filteredData.map(async (tx) => {
+        const { timestamp } = await tx.getBlock();
+        return { ...tx, timestamp }
+      }));
 
-          resolve({
-            txs,
-            multisigName: nameByAddress[el],
-            balance: utils.formatEther(balance),
-          });
-        });
+      return({
+        txs,
+        multisigName: nameByAddress[el],
+        balance: utils.formatEther(balance),
       });
-    });
-    const walletsData = await Promise.all(promises);
+    }));
+
     const sortedWalletsData = walletsData.map((wallet) => {
       return {
         ...wallet,
