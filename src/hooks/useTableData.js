@@ -61,9 +61,14 @@ export default function useTableData(
       }
 
       return new Promise((resolve) => {
-        contracts[nameByAddress[el]].queryFilter(filter).then((response) => {
+        contracts[nameByAddress[el]].queryFilter(filter).then(async (response) => {
+          const txs = await Promise.all(response.map(async (tx) => {
+            const { timestamp } = await tx.getBlock();
+            return { ...tx, timestamp }
+          }));
+
           resolve({
-            txs: response,
+            txs,
             multisigName: nameByAddress[el],
             balance: utils.formatEther(balance),
           });
@@ -93,10 +98,10 @@ export default function useTableData(
 const sortingFunctions = {
   time: {
     ascending: (a, b) => {
-      return b.blockNumber - a.blockNumber;
+      return b.timestamp - a.timestamp;
     },
     descending: (a, b) => {
-      return a.blockNumber - b.blockNumber;
+      return a.timestamp - b.timestamp;
     },
   },
   amount: {

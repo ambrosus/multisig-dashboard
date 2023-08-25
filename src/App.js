@@ -14,6 +14,7 @@ import CommentIcon from './assets/CommentIcon.';
 import CommentModal from './components/CommentModal';
 import formatAddress from './utils/formatString';
 import TableHead from './components/TableHead';
+import formatTimestamp from "./utils/formatTimestamp";
 
 // TODO:
 //   - add animation for comment modal
@@ -23,7 +24,7 @@ const App = () => {
   useAutoLogin();
   const [sortBy, setSortBy] = useState({
     param: 'time',
-    direction: 'descending',
+    direction: 'ascending',
   });
   const { tableData, maxTxsLength } = useTableData(sortBy);
 
@@ -39,9 +40,7 @@ const App = () => {
 
     setCurrentComment(comments[id]);
   };
-
   console.log(tableData);
-
   return (
     <>
       <Menu
@@ -75,6 +74,7 @@ const App = () => {
                         <div className='table__cell-data'>
                           <div className='cell-title'>Tx hash</div>
                           <div className='cell-title'>Amount</div>
+                          <div className='cell-title'>Timestamp</div>
                         </div>
                       </div>
                       {tableData.map((el) => (
@@ -98,6 +98,9 @@ const App = () => {
                                       '$1,'
                                     )}{' '}
                                   AMB
+                                </p>
+                                <p className='tx-amount tx-amount_timestamp'>
+                                  {formatTimestamp(el.txs[i].timestamp)} UTC
                                 </p>
                               </div>
                               {comments[el.txs[i].transactionHash] && (

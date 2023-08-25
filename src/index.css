@@ -503,3 +503,10 @@ html, body, #root {
     transform: translate(0.75rem, 0);
   }
 }
+
+@media screen and (max-width: 768px) {
+  .tx-amount_timestamp {
+    width: 100px;
+    text-wrap: inherit;
+  }
+}
