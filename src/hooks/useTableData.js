@@ -39,8 +39,8 @@ export default function useTableData(
 
   const getTableData = async () => {
     const chainId = 16718;
-
     const contractsData = new Contracts(provider, chainId);
+
     const { contracts, nameByAddress } = contractsData;
 
     const walletsData = await Promise.all(multisigFinanceAddresses.map(async (el) => {
@@ -56,12 +56,15 @@ export default function useTableData(
             );
           }
         );
+      } else {
+        balance = await Multisig.getFinanceBalance(contractsData, nameByAddress[el]);
       }
 
       const filteredData = await contracts[nameByAddress[el]].queryFilter(filter);
       const txs = await Promise.all(filteredData.map(async (tx) => {
         const { timestamp } = await tx.getBlock();
-        return { ...tx, timestamp }
+        const isOutcome = tx.args.addressTo !== el;
+        return { ...tx, timestamp, isOutcome }
       }));
 
       return({
