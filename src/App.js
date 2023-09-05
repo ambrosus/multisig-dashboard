@@ -1,6 +1,5 @@
 import { utils } from 'ethers';
 import useTableData from './hooks/useTableData';
-
 import { Menu } from 'airdao-components-and-tools/components';
 import {
   metamaskConnector,
@@ -15,6 +14,7 @@ import CommentModal from './components/CommentModal';
 import formatAddress from './utils/formatString';
 import TableHead from './components/TableHead';
 import formatTimestamp from "./utils/formatTimestamp";
+import FilterTxs from "./components/FilterTxs";
 
 // TODO:
 //   - add animation for comment modal
@@ -26,7 +26,8 @@ const App = () => {
     param: 'time',
     direction: 'ascending',
   });
-  const { tableData, maxTxsLength } = useTableData(sortBy);
+  const [filterBy, setFilterBy] = useState('all');
+  const { tableData, maxTxsLength } = useTableData(sortBy, filterBy);
 
   const comments = useTxComments();
 
@@ -40,7 +41,10 @@ const App = () => {
 
     setCurrentComment(comments[id]);
   };
-  console.log(tableData);
+
+  const filterTx = (tx) => {
+
+  }
   return (
     <>
       <Menu
@@ -56,11 +60,11 @@ const App = () => {
             Learn how it works with our wiki.
           </p>
         </header>
-
         <section className='table-container'>
           <div className='table-header'>
             <h2 className='table-heading'>Transactions</h2>
             <SortBy onChange={setSortBy} />
+            <FilterTxs setFilterBy={setFilterBy}/>
           </div>
           {tableData && (
             <div className='scroll-container'>
@@ -91,8 +95,10 @@ const App = () => {
                                   {formatAddress(el.txs[i].transactionHash)}
                                 </a>
                                 <p className='tx-amount'>
+                                  {el.txs[i].isOutcome  ? '↓' : <span className='arrow-green'>↑</span>}
+                                  {' '}
                                   {utils
-                                    .formatEther(el.txs[i].args.amount)
+                                    .formatEther(el.txs[i].amount)
                                     .replace(
                                       /(\d)(?=(\d{3})+([^\d]|$))/g,
                                       '$1,'

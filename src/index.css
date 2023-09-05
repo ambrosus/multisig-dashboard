@@ -510,3 +510,53 @@ html, body, #root {
     text-wrap: inherit;
   }
 }
+
+.filter-wrapper {
+  position: relative;
+}
+
+.filter-wrapper:hover .filter-dropdown {
+  display: flex;
+}
+
+.filter-button {
+  color: var(--gray-800, #222);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: -0.14px;
+  border-radius: 20px;
+  border: 1px solid var(--alpha-black-10, rgba(47, 43, 67, 0.10));
+  background: var(--base-white, #FFF);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.filter-dropdown {
+  display: none;
+  position: absolute;
+  padding: 16px;
+  width: 150px;
+  border-radius: 16px;
+  border: 1px solid var(--neutral-100, #E6E6E6);
+  background: #FFF;
+  box-shadow: 0px 6px 12px 0px rgba(47, 43, 67, 0.10);
+  flex-direction: column;
+  gap: 16px 0;
+  right: 0;
+  top: 30px;
+}
+
+.filter-dropdown__item {
+  color: var(--neutral-400, #676B73);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: -0.14px;
+  cursor: pointer;
+}
+
+.arrow-green {
+  color: var(--teal-400-success, #159F80);
+}

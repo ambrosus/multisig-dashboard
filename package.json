@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@airdao/airdao-node-contracts": "^1.0.30",
+    "@airdao/airdao-node-contracts": "^1.0.32",
     "@prismicio/client": "^7.1.0",
     "@prismicio/react": "^2.7.1",
     "@testing-library/jest-dom": "^5.16.5",

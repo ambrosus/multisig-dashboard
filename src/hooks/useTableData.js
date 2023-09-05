@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Contracts, Multisig } from '@airdao/airdao-node-contracts';
 import provider from '../services/provider';
-import { utils } from 'ethers';
+import {BigNumber, utils} from 'ethers';
 import tableDataMock from '../utils/tableDataMock.json';
 
 const masterMultisig = '0x68c66f1C56CC6341856cf4427650978B653C78D6';
@@ -15,9 +15,11 @@ const multisigFinanceAddresses = [
 ];
 
 export default function useTableData(
-  sorting = { param: 'time', direction: 'descending' }
+  sorting = { param: 'time', direction: 'descending' },
+  filterBy = 'all'
 ) {
   const [tableData, setTableData] = useState(tableDataMock);
+  const [filteredList, setFilteredList] = useState(tableDataMock);
 
   useEffect(() => {
     getTableData();
@@ -28,14 +30,14 @@ export default function useTableData(
       const sortedWalletsData = tableData.map((wallet) => {
         return {
           ...wallet,
-          txs: wallet.txs.sort(
+          txs: filterTxs(wallet.txs, filterBy).sort(
             sortingFunctions[sorting.param][sorting.direction]
           ),
         };
       });
-      setTableData(sortedWalletsData);
+      setFilteredList(sortedWalletsData);
     }
-  }, [sorting]);
+  }, [sorting, filterBy]);
 
   const getTableData = async () => {
     const chainId = 16718;
@@ -63,12 +65,13 @@ export default function useTableData(
       const filteredData = await contracts[nameByAddress[el]].queryFilter(filter);
       const txs = await Promise.all(filteredData.map(async (tx) => {
         const { timestamp } = await tx.getBlock();
-        const isOutcome = tx.args.addressTo !== el;
-        return { ...tx, timestamp, isOutcome }
+        return { ...tx, timestamp, isOutcome: true, amount: tx.args.amount }
       }));
 
+      const explorerData = await getExplorerData(el);
+
       return({
-        txs,
+        txs: [...txs, ...explorerData],
         multisigName: nameByAddress[el],
         balance: utils.formatEther(balance),
       });
@@ -83,15 +86,52 @@ export default function useTableData(
       };
     });
     setTableData(sortedWalletsData);
+    setFilteredList(sortedWalletsData)
   };
 
   const maxTxsLength = useMemo(
-    () => (tableData ? Math.max(...tableData.map((el) => el.txs.length)) : 0),
-    [tableData]
+    () => (filteredList ? Math.max(...filteredList.map((el) => el.txs.length)) : 0),
+    [filteredList, filterBy]
   );
 
-  return { tableData, maxTxsLength };
+  return { tableData: filteredList, maxTxsLength };
 }
+
+async function getExplorerData (address) {
+  let hasNext = true;
+  let page = 1;
+  const formattedExplorerData = [];
+
+  while (hasNext) {
+    const response = await fetch(`https://explorer-v2-api.ambrosus.io/v2/addresses/${address}/transfers?page=${page}`);
+    const { data, pagination } = await response.json();
+
+    page = pagination.current;
+    hasNext = pagination.hasNext;
+
+    data.forEach((el) => {
+      if (el.status === 'SUCCESS') {
+        formattedExplorerData.push({
+          transactionHash: el.hash,
+          timestamp: el.timestamp,
+          amount: BigNumber.from(el.value.wei),
+        })
+      }
+    });
+  }
+  return formattedExplorerData;
+}
+
+const filterTxs = (txs, filter) => {
+  if (filter === 'all') return txs;
+  return txs.filter((el) => {
+    if (filter === 'out') {
+      return el.isOutcome;
+    } else if (filter === 'in') {
+      return !el.isOutcome;
+    }
+  });
+};
 
 const sortingFunctions = {
   time: {
@@ -103,7 +143,7 @@ const sortingFunctions = {
     },
   },
   amount: {
-    ascending: ({ args: { amount: a } }, { args: { amount: b } }) => {
+    ascending: ( { amount: a }, { amount: b }) => {
       if (a.lt(b)) {
         return 1;
       }
@@ -114,7 +154,7 @@ const sortingFunctions = {
         return 0;
       }
     },
-    descending: ({ args: { amount: a } }, { args: { amount: b } }) => {
+    descending: ({ amount: a }, { amount: b }) => {
       if (a.lt(b)) {
         return -1;
       }
