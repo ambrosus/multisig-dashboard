@@ -513,6 +513,17 @@ html, body, #root {
 
 .filter-wrapper {
   position: relative;
+  width: 140px;
+  display: flex;
+  justify-content: flex-end;
+  height: 38px;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-wrapper {
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
 }
 
 .filter-wrapper:hover .filter-dropdown {
@@ -520,6 +531,7 @@ html, body, #root {
 }
 
 .filter-button {
+  height: 30px;
   color: var(--gray-800, #222);
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -545,7 +557,13 @@ html, body, #root {
   flex-direction: column;
   gap: 16px 0;
   right: 0;
-  top: 30px;
+  top: 38px;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-dropdown {
+    left: 0;
+  }
 }
 
 .filter-dropdown__item {

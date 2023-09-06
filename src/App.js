@@ -61,7 +61,7 @@ const App = () => {
           <div className='table-header'>
             <h2 className='table-heading'>Transactions</h2>
             <SortBy onChange={setSortBy} />
-            <FilterTxs setFilterBy={setFilterBy}/>
+            <FilterTxs setFilterBy={setFilterBy} selectedFilter={filterBy}/>
           </div>
           {tableData && (
             <div className='scroll-container'>
@@ -92,7 +92,7 @@ const App = () => {
                                   {formatAddress(el.txs[i].transactionHash)}
                                 </a>
                                 <p className='tx-amount'>
-                                  {el.txs[i].isOutcome  ? '↓' : <span className='arrow-green'>↑</span>}
+                                  {el.txs[i].isOutcome  ? '↑' : <span className='arrow-green'>↓</span>}
                                   {' '}
                                   {utils
                                     .formatEther(el.txs[i].amount)
