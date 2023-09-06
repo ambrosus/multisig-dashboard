@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const FilterTxs = ({ setFilterBy }) => {
   return (
     <div className="filter-wrapper">
@@ -15,6 +17,10 @@ const FilterTxs = ({ setFilterBy }) => {
       </div>
     </div>
   )
+};
+
+FilterTxs.propTypes = {
+  setFilterBy: PropTypes.func,
 };
 
 export default FilterTxs;

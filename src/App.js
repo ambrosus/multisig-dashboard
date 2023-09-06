@@ -42,9 +42,6 @@ const App = () => {
     setCurrentComment(comments[id]);
   };
 
-  const filterTx = (tx) => {
-
-  }
   return (
     <>
       <Menu
