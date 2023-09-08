@@ -73,10 +73,10 @@ html, body, #root {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-
+  align-items: center;
   width: calc(100% - 60px);
   padding: 0 80px 18px;
-
+  flex-wrap: wrap;
   margin-left: auto;
 }
 
@@ -386,10 +386,7 @@ html, body, #root {
 }
 
 @media screen and (max-width: 768px) {
-  .table-header {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-left: 0;
+  .table-heading {
     width: 100%;
   }
 
@@ -578,3 +575,4 @@ html, body, #root {
 .arrow-green {
   color: var(--teal-400-success, #159F80);
 }
+
