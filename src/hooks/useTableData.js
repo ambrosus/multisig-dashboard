@@ -68,10 +68,11 @@ export default function useTableData(
         return { ...tx, timestamp, isOutcome: true, amount: tx.args.amount }
       }));
 
-      const explorerData = await getExplorerData(el);
+      const explorerDataTransfers = await getExplorerData(el, 'transfers');
+      const explorerDataInners = await getExplorerData(el, 'inners');
 
       return({
-        txs: [...txs, ...explorerData],
+        txs: [...txs, ...explorerDataTransfers, ...explorerDataInners],
         multisigName: nameByAddress[el],
         balance: utils.formatEther(balance),
       });
@@ -97,24 +98,25 @@ export default function useTableData(
   return { tableData: filteredList, maxTxsLength };
 }
 
-async function getExplorerData (address) {
+async function getExplorerData (address, type) {
   let hasNext = true;
   let page = 1;
   const formattedExplorerData = [];
 
   while (hasNext) {
-    const response = await fetch(`https://explorer-v2-api.ambrosus.io/v2/addresses/${address}/transfers?page=${page}`);
+    const response = await fetch(`https://explorer-v2-api.ambrosus.io/v2/addresses/${address}/${type}?page=${page}`);
     const { data, pagination } = await response.json();
 
-    page = pagination.current;
+    page = pagination.next;
     hasNext = pagination.hasNext;
 
     data.forEach((el) => {
-      if (el.status === 'SUCCESS') {
+      if (el.status === 'SUCCESS' && el.type === 'Transfer' && el.to === address) {
         formattedExplorerData.push({
           transactionHash: el.hash,
           timestamp: el.timestamp,
           amount: BigNumber.from(el.value.wei),
+          type
         })
       }
     });

@@ -83,7 +83,10 @@ const App = () => {
                           {el.txs[i] && (
                             <>
                               <div className={'table__cell-data'}>
-                                <a
+                                {el.txs[i].type === 'inners' ? (
+                                  <span className='tx-amount'>{formatAddress(el.txs[i].transactionHash)}</span>
+                                ) : (
+                                  <a
                                   href={`https://airdao.io/explorer/tx/${el.txs[i].transactionHash}`}
                                   target='_blank'
                                   rel='noreferrer'
@@ -91,6 +94,7 @@ const App = () => {
                                 >
                                   {formatAddress(el.txs[i].transactionHash)}
                                 </a>
+                                )}
                                 <p className='tx-amount'>
                                   {el.txs[i].isOutcome  ? '↑' : <span className='arrow-green'>↓</span>}
                                   {' '}
