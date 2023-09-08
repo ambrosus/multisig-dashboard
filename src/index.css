@@ -430,9 +430,14 @@ html, body, #root {
   }
 }
 
-@media screen and (max-width: 430px) {
+@media screen and (max-width: 470px) {
   .side-menu {
     border-radius: unset;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -513,12 +518,12 @@ html, body, #root {
   width: 140px;
   display: flex;
   justify-content: flex-end;
-  height: 38px;
+  height: 43px;
+  align-items: center;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 470px) {
   .filter-wrapper {
-    margin-top: 10px;
     justify-content: flex-start;
   }
 }
@@ -554,7 +559,7 @@ html, body, #root {
   flex-direction: column;
   gap: 16px 0;
   right: 0;
-  top: 38px;
+  top: 43px;
 }
 
 @media screen and (max-width: 768px) {
