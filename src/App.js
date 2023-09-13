@@ -51,11 +51,27 @@ const App = () => {
       />
       <main className='main'>
         <header className='header'>
-          <h1 className='heading'>Governance multi-sig tracker</h1>
+          <h1 className='heading'>Operational funds</h1>
           <p className='description'>
             This multi-signature wallet holds all of AirDAO’s operational funds.
-            Learn how it works with our wiki.
+            The operational funds tracker increases transparency on how AirDAO
+            uses its funds. Learn more in our{' '}
+            <a
+              href="https://airdao.academy/guides/what-is-a-multi-signature-wallet"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Academy guide
+            </a>
           </p>
+          <br/>
+          <a
+            href="https://github.com/ambrosus/multisig-dashboard"
+            target="_blank"
+            rel="noreferrer"
+          >
+            See GitHub page repository
+          </a>
         </header>
         <section className='table-container'>
           <div className='table-header'>
