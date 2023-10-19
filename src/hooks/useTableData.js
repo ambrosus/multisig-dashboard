@@ -68,11 +68,10 @@ export default function useTableData(
         return { ...tx, timestamp, isOutcome: true, amount: tx.args.amount }
       }));
 
-      const explorerDataTransfers = await getExplorerData(el, 'transfers');
-      const explorerDataInners = await getExplorerData(el, 'inners');
+      const explorerDataTransfers = await getExplorerData(el, 'transactions');
 
       return({
-        txs: [...txs, ...explorerDataTransfers, ...explorerDataInners],
+        txs: [...txs, ...explorerDataTransfers],
         multisigName: nameByAddress[el],
         balance: utils.formatEther(balance),
       });
@@ -104,7 +103,7 @@ async function getExplorerData (address, type) {
   const formattedExplorerData = [];
 
   while (hasNext) {
-    const response = await fetch(`https://explorer-v2-api.ambrosus.io/v2/addresses/${address}/${type}?page=${page}`);
+    const response = await fetch(`https://explorer-test2-api.ambrosus.io/accounts/${address}/${type}?page=${page}`);
     const { data, pagination } = await response.json();
 
     page = pagination.next;
