@@ -103,7 +103,7 @@ async function getExplorerData (address, type) {
   const formattedExplorerData = [];
 
   while (hasNext) {
-    const response = await fetch(`https://explorer-test2-api.ambrosus.io/accounts/${address}/${type}?page=${page}`);
+    const response = await fetch(`https://explorer-v2-api.ambrosus.io/v2/addresses/${address}/all?page=${page}`);
     const { data, pagination } = await response.json();
 
     page = pagination.next;
